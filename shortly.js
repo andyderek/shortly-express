@@ -10,6 +10,7 @@ var User = require('./app/models/user');
 var Links = require('./app/collections/links');
 var Link = require('./app/models/link');
 var Click = require('./app/models/click');
+var bookshelf = require('bookshelf')
 
 var app = express();
 
@@ -22,19 +23,39 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
-
 app.get('/', 
 function(req, res) {
+  // console.log('login added to bottom');
+  res.render('login');
+});
+
+app.post('/login', 
+function(req, res) {
+  console.log('index originally on top', req.body.url);
+  res.render('index');
+});
+
+app.get('/signup', 
+function(req, res) {
+  // console.log('login added to bottom');
+  res.render('signup');
+});
+
+app.post('/signup', 
+function(req, res) {
+  // console.log('login added to bottom');
   res.render('index');
 });
 
 app.get('/create', 
 function(req, res) {
+  // console.log('inside the get index app.get using /create');
   res.render('index');
 });
 
 app.get('/links', 
 function(req, res) {
+  console.log('inside the get links.model using /links', req.body.url);
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
   });
@@ -43,19 +64,25 @@ function(req, res) {
 app.post('/links', 
 function(req, res) {
   var uri = req.body.url;
+  console.log('inside the app.post /links function: req.body.url', 
+    Links.fetch());
+
 
   if (!util.isValidUrl(uri)) {
-    console.log('Not a valid url: ', uri);
+    console.log('Not a valid url shortly.js: ', uri);
+    //create a new database entry?
+    db.knex(uri)
     return res.send(404);
   }
 
   new Link({ url: uri }).fetch().then(function(found) {
     if (found) {
       res.send(200, found.attributes);
+
     } else {
       util.getUrlTitle(uri, function(err, title) {
         if (err) {
-          console.log('Error reading URL heading: ', err);
+          console.log('Error reading URL heading: shortly.js', err);
           return res.send(404);
         }
 

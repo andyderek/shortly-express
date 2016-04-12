@@ -72,6 +72,7 @@ describe('', function() {
 
     var requestWithSession = request.defaults({jar: true});
     xbeforeEach(function(done){      // create a user that we can then log-in with
+      console.log('HELLO FROM INSIDE');
       new User({
           'username': 'Phillip',
           'password': 'Phillip'
@@ -121,6 +122,7 @@ describe('', function() {
 
       it('Responds with the short code', function(done) {
         requestWithSession(options, function(error, res, body) {
+          console.log('this is being executed');
           expect(res.body.url).to.equal('http://www.github.com/');
           expect(res.body.code).to.not.be.null;
           done();
@@ -128,14 +130,17 @@ describe('', function() {
       });
 
       it('New links create a database entry', function(done) {
+        console.log('this is also being executed!');
         requestWithSession(options, function(error, res, body) {
           db.knex('urls')
             .where('url', '=', 'http://www.github.com/')
             .then(function(urls) {
               if (urls['0'] && urls['0']['url']) {
+                console.log('this statement is true!');
                 var foundUrl = urls['0']['url'];
               }
               expect(foundUrl).to.equal('http://www.github.com/');
+              console.log('this is found url:', foundUrl);
               done();
             });
         });
