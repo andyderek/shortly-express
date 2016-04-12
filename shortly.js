@@ -25,7 +25,7 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/', 
 function(req, res) {
-  // console.log('login added to bottom');
+  console.log('login added to bottom');
   res.render('login');
 });
 
@@ -64,12 +64,9 @@ function(req, res) {
 app.post('/links', 
 function(req, res) {
   var uri = req.body.url;
-  console.log('inside the app.post /links function: req.body.url', 
-    Links.fetch());
-
 
   if (!util.isValidUrl(uri)) {
-    console.log('Not a valid url shortly.js: ', uri);
+    console.log('Not a valid url shortly.js: ');
     //create a new database entry?
     db.knex(uri)
     return res.send(404);
@@ -86,12 +83,12 @@ function(req, res) {
           return res.send(404);
         }
 
+
         var link = new Link({
           url: uri,
           title: title,
           base_url: req.headers.origin
         });
-
         link.save().then(function(newLink) {
           Links.add(newLink);
           res.send(200, newLink);
