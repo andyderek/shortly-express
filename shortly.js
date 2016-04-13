@@ -86,10 +86,34 @@ app.get('/login', function(req, res) {
   res.render('login');
 });
 
+//here is where the authentication really begins - at the login screen
 app.post('/login', 
 function(req, res) {
+  //we use req.body.username and req.body.password and assign them accordingly (these are input from user)
   var username = req.body.username;
-  var password = request.body.password;
+  var password = req.body.password;
+
+  //check to see if the username exists in our table
+  new User({username: username})
+  .fetch()
+  .then(function(user) {
+    //if there is no matching user in the database (user table), then redirect the user to the login page
+    if (!user) {
+      res.redirect('/login');
+    } else {
+      //if the user name matches with what we have in our database (user table), proceed to compare the password entered by the user
+      user.comparePassword(password, function(match) {
+        //check to see if there is a match with our password with that user
+        if (match) {
+          //if there is a match, create a new session id (server side) for the user upon logging in
+          util.createSession(req, res, user);
+          //else if the password does not match, redirect the user back to the login page
+        } else {
+          res.redirect('/login');
+        }
+      })
+    }
+  })
 
   console.log('index originally on top', req.body.url);
   res.render('index');
