@@ -25,49 +25,22 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', 
-function(req, res) {
+app.get('/', util.checkUser, function(req, res) {
   console.log('login added to bottom');
   res.render('index');
 });
 
-app.post('/login', 
-function(req, res) {
-  var username = req.body.username;
-  var password = request.body.password;
-
-  console.log('index originally on top', req.body.url);
+app.get('/create', util.checkUser, function(req, res) {
   res.render('index');
 });
 
-app.get('/signup', 
-function(req, res) {
-  // console.log('login added to bottom');
-  res.render('signup');
-});
-
-app.post('/signup', 
-function(req, res) {
-  // console.log('login added to bottom');
-  res.render('index');
-});
-
-app.get('/create', 
-function(req, res) {
-  // console.log('inside the get index app.get using /create');
-  res.render('index');
-});
-
-app.get('/links', 
-function(req, res) {
-  console.log('inside the get links.model using /links', req.body.url);
+app.get('/links', util.checkUser, function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
   });
 });
 
-app.post('/links', 
-function(req, res) {
+app.post('/links', util.checkUser, function(req, res) {
   var uri = req.body.url;
 
   if (!util.isValidUrl(uri)) {
@@ -103,11 +76,24 @@ function(req, res) {
   });
 });
 
+
 /************************************************************/
 // Write your dedicated authentication routes here
 // e.g. login, logout, etc.
 /************************************************************/
 
+app.get('/login', function(req, res) {
+  res.render('login');
+});
+
+app.post('/login', 
+function(req, res) {
+  var username = req.body.username;
+  var password = request.body.password;
+
+  console.log('index originally on top', req.body.url);
+  res.render('index');
+});
 
 
 /************************************************************/
