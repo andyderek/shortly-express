@@ -10,7 +10,9 @@ var User = require('./app/models/user');
 var Links = require('./app/collections/links');
 var Link = require('./app/models/link');
 var Click = require('./app/models/click');
-var bookshelf = require('bookshelf')
+var bookshelf = require('bookshelf');
+
+var session = require('express-session');
 
 var app = express();
 
@@ -26,11 +28,14 @@ app.use(express.static(__dirname + '/public'));
 app.get('/', 
 function(req, res) {
   console.log('login added to bottom');
-  res.render('login');
+  res.render('index');
 });
 
 app.post('/login', 
 function(req, res) {
+  var username = req.body.username;
+  var password = request.body.password;
+
   console.log('index originally on top', req.body.url);
   res.render('index');
 });

@@ -68,10 +68,10 @@ describe('', function() {
       });
   });
 
-  xdescribe('Link creation:', function(){
+  describe('Link creation:', function(){
 
     var requestWithSession = request.defaults({jar: true});
-    beforeEach(function(done){      // create a user that we can then log-in with
+    xbeforeEach(function(done){      // create a user that we can then log-in with
       console.log('HELLO FROM INSIDE');
       new User({
           'username': 'Phillip',
@@ -100,6 +100,7 @@ describe('', function() {
         'json': {
           'url': 'definitely not a valid url - from specRunner BOO!O!'
         }
+
       };
 
       requestWithSession(options, function(error, res, body) {
@@ -122,7 +123,6 @@ describe('', function() {
 
       it('Responds with the short code', function(done) {
         requestWithSession(options, function(error, res, body) {
-          console.log('Responds with the short code test passes!!!!!!');
           expect(res.body.url).to.equal('http://www.github.com/');
           expect(res.body.code).to.not.be.null;
           done();
@@ -130,17 +130,14 @@ describe('', function() {
       });
 
       it('New links create a database entry', function(done) {
-        console.log('New links create a database entry PASSESS!!!!!!!!!');
         requestWithSession(options, function(error, res, body) {
           db.knex('urls')
             .where('url', '=', 'http://www.github.com/')
             .then(function(urls) {
               if (urls['0'] && urls['0']['url']) {
-                console.log('this statement is true!');
                 var foundUrl = urls['0']['url'];
               }
               expect(foundUrl).to.equal('http://www.github.com/');
-              console.log('this is found url:', foundUrl);
               done();
             });
         });
@@ -166,7 +163,7 @@ describe('', function() {
 
       var link;
 
-      beforeEach(function(done){
+      xbeforeEach(function(done){
         // save a link to the database
         link = new Link({
           url: 'http://www.github.com/',
@@ -195,7 +192,7 @@ describe('', function() {
         });
       });
 
-      it('Shortcode redirects to correct url', function(done) {
+      xit('Shortcode redirects to correct url', function(done) {
         var options = {
           'method': 'GET',
           'uri': 'http://127.0.0.1:4568/' + link.get('code')
@@ -208,7 +205,7 @@ describe('', function() {
         });
       });
 
-      it('Returns all of the links to display on the links page', function(done) {
+      xit('Returns all of the links to display on the links page', function(done) {
         var options = {
           'method': 'GET',
           'uri': 'http://127.0.0.1:4568/links'
@@ -250,7 +247,7 @@ describe('', function() {
 
   }); // 'Priviledged Access'
 
-  xdescribe('Account Creation:', function(){
+  describe('Account Creation:', function(){
 
     it('Signup creates a user record', function(done) {
       var options = {
@@ -298,11 +295,11 @@ describe('', function() {
 
   }); // 'Account Creation'
 
-  xdescribe('Account Login:', function(){
+  ('Account Login:', function(){
 
     var requestWithSession = request.defaults({jar: true});
 
-    beforeEach(function(done){
+    xbeforeEach(function(done){
       new User({
           'username': 'Phillip',
           'password': 'Phillip'
